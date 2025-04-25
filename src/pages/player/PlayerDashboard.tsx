@@ -1,344 +1,228 @@
+import { useState } from 'react';
+import { 
+  Trophy, Gamepad, Calendar, Users, Activity, 
+  Plus, Medal, ChevronRight, Clock, Search
+} from 'lucide-react';
 
-import { Trophy, Calendar, Users, Clock, ArrowRight, Shield, Star } from 'lucide-react';
-import { useAuth } from '../../contexts/AuthContext';
-
-// Status badge component
-const StatusBadge = ({ status }: { status: string }) => {
-  let bgColor, textColor;
-  
-  switch (status) {
-    case 'active':
-      bgColor = 'bg-green-500/20';
-      textColor = 'text-green-500';
-      break;
-    case 'upcoming':
-      bgColor = 'bg-blue-500/20';
-      textColor = 'text-blue-500';
-      break;
-    case 'completed':
-      bgColor = 'bg-gray-500/20';
-      textColor = 'text-gray-400';
-      break;
-    default:
-      bgColor = 'bg-gray-500/20';
-      textColor = 'text-gray-400';
-  }
-  
-  return (
-    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${bgColor} ${textColor} capitalize`}>
-      {status === 'active' && <span className="w-2 h-2 bg-green-500 rounded-full mr-1 animate-pulse"></span>}
-      {status}
-    </span>
-  );
-};
-
-// Mock player data
-const playerStats = {
-  totalTournaments: 15,
-  totalMatches: 48,
-  wins: 32,
-  winRate: "66.7%",
-  upcomingMatches: 3,
-  ranking: "#342",
-  mostPlayedGame: "League of Legends",
-  recentTeam: "Cyber Knights"
-};
-
-// Mock tournaments
-const playerTournaments = [
+// Mock data for recent tournaments
+const recentTournaments = [
   {
     id: 1,
-    name: "Winter Championship 2023",
-    game: "League of Legends",
-    team: "Cyber Knights",
-    status: "upcoming",
-    placement: "-",
-    startDate: "2023-12-15",
-    nextMatch: "2023-12-15 18:00"
+    name: 'Summer Championship 2023',
+    game: 'League of Legends',
+    date: '2023-08-15',
+    status: 'active',
+    participants: 128
   },
   {
     id: 2,
-    name: "CS2 Pro League Season 2",
-    game: "Counter-Strike 2",
-    team: "Cyber Knights",
-    status: "active",
-    placement: "4th",
-    startDate: "2023-11-01",
-    nextMatch: "2023-12-05 20:00"
+    name: 'Apex Predators Cup',
+    game: 'Apex Legends',
+    date: '2023-09-01',
+    status: 'upcoming',
+    participants: 60
   },
   {
     id: 3,
-    name: "Summer Apex Invitational",
-    game: "Apex Legends",
-    team: "Apex Predators",
-    status: "completed",
-    placement: "2nd",
-    startDate: "2023-08-05",
-    nextMatch: null
-  }
+    name: 'Valorant Pro League Season 4',
+    game: 'Valorant',
+    date: '2023-07-20',
+    status: 'active',
+    participants: 32
+  },
+  {
+    id: 4,
+    name: 'CSGO Masters Tournament',
+    game: 'CS:GO',
+    date: '2023-06-10',
+    status: 'completed',
+    participants: 64
+  },
+  {
+    id: 5,
+    name: 'Rocket League World Cup',
+    game: 'Rocket League',
+    date: '2023-09-15',
+    status: 'upcoming',
+    participants: 48
+  },
 ];
 
-// Mock upcoming matches
+// Mock data for upcoming matches
 const upcomingMatches = [
   {
     id: 1,
-    tournament: "Winter Championship 2023",
-    opponent: "Team Liquid",
-    date: "2023-12-15 18:00",
-    game: "League of Legends",
-    round: "Quarterfinals"
+    team1: 'Team A',
+    team2: 'Team B',
+    game: 'League of Legends',
+    time: '2023-08-20 18:00',
+    tournament: 'Summer Championship 2023'
   },
   {
     id: 2,
-    tournament: "CS2 Pro League Season 2",
-    opponent: "Cloud9",
-    date: "2023-12-05 20:00",
-    game: "Counter-Strike 2",
-    round: "Semifinals"
+    team1: 'Team X',
+    team2: 'Team Y',
+    game: 'Valorant',
+    time: '2023-08-22 20:00',
+    tournament: 'Valorant Pro League Season 4'
   },
   {
     id: 3,
-    tournament: "CS2 Pro League Season 2",
-    opponent: "TBD",
-    date: "2023-12-12 19:00",
-    game: "Counter-Strike 2",
-    round: "Finals (if qualified)"
-  }
+    team1: 'Team 1',
+    team2: 'Team 2',
+    game: 'Apex Legends',
+    time: '2023-08-25 16:00',
+    tournament: 'Apex Predators Cup'
+  },
 ];
 
-// Mock teams
-const playerTeams = [
-  {
-    id: 1,
-    name: "Cyber Knights",
-    logo: "https://api.dicebear.com/7.x/initials/svg?seed=CK&backgroundColor=8B5CF6",
-    members: 5,
-    games: ["League of Legends", "Counter-Strike 2"],
-    captain: true
-  },
-  {
-    id: 2,
-    name: "Apex Predators",
-    logo: "https://api.dicebear.com/7.x/initials/svg?seed=AP&backgroundColor=F97316",
-    members: 3,
-    games: ["Apex Legends"],
-    captain: false
-  }
-];
+// Mock data for player stats
+const playerStats = {
+  totalGamesPlayed: 245,
+  winRate: '68%',
+  averageKills: 12.5,
+  favoriteGame: 'League of Legends'
+};
 
 const PlayerDashboard = () => {
-  const { user } = useAuth();
+  const [searchTerm, setSearchTerm] = useState('');
   
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold gaming-heading">Player Dashboard</h1>
-          <p className="text-muted-foreground">Welcome back, {user?.username}</p>
-        </div>
+        <h1 className="text-3xl font-bold gaming-heading">Player Dashboard</h1>
+        <button className="gaming-btn-primary flex items-center gap-2">
+          <Plus size={18} />
+          Create Team
+        </button>
+      </div>
+      
+      {/* Search Bar */}
+      <div className="relative">
+        <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+        <input
+          type="text"
+          placeholder="Search tournaments, teams, games..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="gaming-input w-full pl-10"
+        />
       </div>
       
       {/* Stats Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="gaming-card p-4">
-          <div className="flex items-start justify-between">
+          <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Total Tournaments</p>
-              <h4 className="text-2xl font-bold">{playerStats.totalTournaments}</h4>
+              <p className="text-sm font-medium text-muted-foreground">Total Games Played</p>
+              <h4 className="text-2xl font-bold mt-1">{playerStats.totalGamesPlayed}</h4>
             </div>
-            <Trophy size={24} className="text-gaming-purple" />
+            <Activity size={40} className="text-gaming-purple" />
           </div>
         </div>
         
         <div className="gaming-card p-4">
-          <div className="flex items-start justify-between">
+          <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Win Rate</p>
-              <h4 className="text-2xl font-bold">{playerStats.winRate}</h4>
-              <p className="text-xs text-muted-foreground">{playerStats.wins} / {playerStats.totalMatches} matches</p>
+              <p className="text-sm font-medium text-muted-foreground">Win Rate</p>
+              <h4 className="text-2xl font-bold mt-1">{playerStats.winRate}</h4>
             </div>
-            <Star size={24} className="text-gaming-orange" />
+            <Trophy size={40} className="text-gaming-orange" />
           </div>
         </div>
         
         <div className="gaming-card p-4">
-          <div className="flex items-start justify-between">
+          <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Upcoming Matches</p>
-              <h4 className="text-2xl font-bold">{playerStats.upcomingMatches}</h4>
+              <p className="text-sm font-medium text-muted-foreground">Favorite Game</p>
+              <h4 className="text-xl font-bold mt-1">{playerStats.favoriteGame}</h4>
             </div>
-            <Calendar size={24} className="text-gaming-blue" />
-          </div>
-        </div>
-        
-        <div className="gaming-card p-4">
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-sm text-muted-foreground">Global Ranking</p>
-              <h4 className="text-2xl font-bold">{playerStats.ranking}</h4>
-            </div>
-            <Shield size={24} className="text-gaming-purple" />
+            <Gamepad size={40} className="text-gaming-blue" />
           </div>
         </div>
       </div>
       
-      {/* Next Match and Teams */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Next Match */}
-        <div className="gaming-card p-5 col-span-1">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-bold flex items-center gap-2">
-              <Clock size={18} className="text-gaming-purple" />
-              Next Match
-            </h3>
-          </div>
-          
-          {upcomingMatches[0] ? (
-            <div className="space-y-4">
-              <div className="bg-gaming-dark/30 p-3 rounded-md border border-border">
-                <div className="flex justify-between items-center mb-1">
-                  <p className="font-bold">{upcomingMatches[0].tournament}</p>
-                  <p className="text-xs text-gaming-orange">{upcomingMatches[0].round}</p>
-                </div>
-                <p className="text-sm text-muted-foreground mb-2">{upcomingMatches[0].game}</p>
-                
-                <div className="flex items-center justify-between bg-gaming-dark/50 rounded-md p-3">
-                  <div className="text-center">
-                    <div className="w-10 h-10 rounded-full bg-gaming-purple/20 flex items-center justify-center mx-auto mb-1 border border-gaming-purple/30">
-                      <Trophy size={16} className="text-gaming-purple" />
-                    </div>
-                    <p className="text-sm font-medium">You</p>
-                  </div>
-                  
-                  <div className="text-center">
-                    <p className="text-2xl font-bold text-gaming-orange">VS</p>
-                    <p className="text-xs text-muted-foreground">
-                      {new Date(upcomingMatches[0].date).toLocaleDateString()} at {new Date(upcomingMatches[0].date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </p>
-                  </div>
-                  
-                  <div className="text-center">
-                    <div className="w-10 h-10 rounded-full bg-gaming-orange/20 flex items-center justify-center mx-auto mb-1 border border-gaming-orange/30">
-                      <Shield size={16} className="text-gaming-orange" />
-                    </div>
-                    <p className="text-sm font-medium">{upcomingMatches[0].opponent}</p>
-                  </div>
-                </div>
-              </div>
-              
-              <button className="gaming-btn-primary w-full flex items-center justify-center gap-1">
-                <Calendar size={16} />
-                View All Matches
-              </button>
-            </div>
-          ) : (
-            <div className="text-center py-4">
-              <p className="text-muted-foreground">No upcoming matches</p>
-            </div>
-          )}
-        </div>
-        
-        {/* Teams */}
-        <div className="gaming-card p-5 col-span-1 lg:col-span-2">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-bold flex items-center gap-2">
-              <Users size={18} className="text-gaming-purple" />
-              My Teams
-            </h3>
-            <button className="gaming-btn-secondary py-1 px-3 text-sm">
-              Manage Teams
-            </button>
-          </div>
-          
-          <div className="space-y-4">
-            {playerTeams.map(team => (
-              <div key={team.id} className="flex justify-between items-center p-3 bg-gaming-dark/30 rounded-md border border-border">
-                <div className="flex items-center gap-3">
-                  <img 
-                    src={team.logo} 
-                    alt={team.name}
-                    className="w-12 h-12 rounded-md"
-                  />
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <p className="font-bold">{team.name}</p>
-                      {team.captain && (
-                        <span className="text-xs bg-gaming-purple/20 text-gaming-purple px-2 py-0.5 rounded-full">
-                          Captain
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      {team.members} members • {team.games.join(', ')}
-                    </p>
-                  </div>
-                </div>
-                <button className="gaming-btn-secondary py-1 px-3 text-sm">
-                  View
-                </button>
-              </div>
-            ))}
-            
-            <button className="gaming-btn-secondary w-full flex items-center justify-center gap-1">
-              <Plus size={16} />
-              Create New Team
-            </button>
-          </div>
-        </div>
-      </div>
-      
-      {/* Current Tournaments */}
+      {/* Upcoming Matches */}
       <div className="gaming-card p-5">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-bold flex items-center gap-2">
-            <Trophy size={18} className="text-gaming-purple" />
-            My Tournaments
-          </h3>
-          <button className="gaming-btn-secondary py-1 px-3 text-sm">
-            View All
-          </button>
+          <h3 className="text-xl font-medium">Upcoming Matches</h3>
+          <a href="#" className="text-sm text-gaming-purple hover:underline">View All</a>
+        </div>
+        
+        <div className="space-y-3">
+          {upcomingMatches.map(match => (
+            <div key={match.id} className="flex items-center justify-between">
+              <div>
+                <p className="font-medium">{match.team1} vs {match.team2}</p>
+                <p className="text-sm text-muted-foreground">
+                  <Calendar size={14} className="inline-block mr-1" />
+                  {new Date(match.time).toLocaleString()}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  <Trophy size={14} className="inline-block mr-1" />
+                  {match.tournament} ({match.game})
+                </p>
+              </div>
+              <span className="text-sm text-blue-500">
+                <Clock size={16} className="inline-block mr-1" />
+                {new Date(match.time) > new Date() ? 'Upcoming' : 'Live'}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+      
+      {/* Recent Tournaments */}
+      <div className="gaming-card p-5">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-xl font-medium">Recent Tournaments</h3>
+          <a href="#" className="text-sm text-gaming-purple hover:underline">View All</a>
         </div>
         
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-border text-left">
-                <th className="py-3 px-2">Tournament</th>
+                <th className="py-3 px-2">Name</th>
                 <th className="py-3 px-2">Game</th>
-                <th className="py-3 px-2">Team</th>
+                <th className="py-3 px-2">Date</th>
                 <th className="py-3 px-2">Status</th>
-                <th className="py-3 px-2">Placement</th>
-                <th className="py-3 px-2">Next Match</th>
-                <th className="py-3 px-2"></th>
+                <th className="py-3 px-2">Participants</th>
               </tr>
             </thead>
             <tbody>
-              {playerTournaments.map(tournament => (
+              {recentTournaments.map(tournament => (
                 <tr key={tournament.id} className="border-b border-border hover:bg-secondary/10">
                   <td className="py-3 px-2 font-medium">{tournament.name}</td>
                   <td className="py-3 px-2">{tournament.game}</td>
-                  <td className="py-3 px-2">{tournament.team}</td>
+                  <td className="py-3 px-2">{new Date(tournament.date).toLocaleDateString()}</td>
                   <td className="py-3 px-2">
-                    <StatusBadge status={tournament.status} />
+                    <span className="capitalize">{tournament.status}</span>
                   </td>
-                  <td className="py-3 px-2">{tournament.placement}</td>
-                  <td className="py-3 px-2">
-                    {tournament.nextMatch ? (
-                      <span>{new Date(tournament.nextMatch).toLocaleDateString()} {new Date(tournament.nextMatch).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                    ) : (
-                      <span className="text-muted-foreground">-</span>
-                    )}
-                  </td>
-                  <td className="py-3 px-2">
-                    <button className="gaming-btn-secondary py-1 px-3 text-sm flex items-center gap-1">
-                      <ArrowRight size={14} />
-                      <span className="sr-only">View</span>
-                    </button>
-                  </td>
+                  <td className="py-3 px-2">{tournament.participants}</td>
                 </tr>
               ))}
             </tbody>
           </table>
+        </div>
+      </div>
+      
+      {/* Badges and Achievements */}
+      <div className="gaming-card p-5">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-xl font-medium">Badges & Achievements</h3>
+          <a href="#" className="text-sm text-gaming-purple hover:underline">View All</a>
+        </div>
+        
+        <div className="grid grid-cols-3 sm:grid-cols-5 gap-4">
+          {[1, 2, 3, 4, 5, 6].map(index => (
+            <div key={index} className="text-center">
+              <div className="w-12 h-12 rounded-full bg-gaming-dark/50 flex items-center justify-center mx-auto">
+                <Medal size={24} className="text-yellow-500" />
+              </div>
+              <p className="text-sm mt-2 text-muted-foreground">Achievement {index}</p>
+            </div>
+          ))}
         </div>
       </div>
     </div>

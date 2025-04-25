@@ -1,8 +1,7 @@
-
 import { useState } from 'react';
 import { 
   Search, Filter, Plus, Trash2, Edit, 
-  Eye, ChevronLeft, ChevronRight, GameController
+  Eye, ChevronLeft, ChevronRight, Gamepad
 } from 'lucide-react';
 
 // Mock game data
@@ -230,7 +229,7 @@ const GameManagement = () => {
           <div className="gaming-card w-full max-w-md p-6 animate-scale-in">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xl font-bold flex items-center gap-2">
-                <GameController size={20} className="text-gaming-purple" />
+                <Gamepad size={20} className="text-gaming-purple" />
                 Add New Game
               </h3>
               <button 

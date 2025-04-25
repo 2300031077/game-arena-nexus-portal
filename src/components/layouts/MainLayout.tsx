@@ -1,9 +1,8 @@
-
 import { ReactNode } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { 
-  Home, LogOut, Trophy, GameController, Users, 
+  Home, LogOut, Trophy, Gamepad, Users, 
   Calendar, BarChart3, Medal, User, Bell
 } from 'lucide-react';
 
@@ -43,7 +42,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
     { 
       path: '/admin/games', 
       name: 'Games', 
-      icon: <GameController size={20} />, 
+      icon: <Gamepad size={20} />, 
       roles: ['admin'] 
     },
     { 

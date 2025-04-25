@@ -1,7 +1,6 @@
-
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Trophy, Users, Calendar, Award, ArrowRight, GameController } from 'lucide-react';
+import { Trophy, Users, Calendar, Award, ArrowRight, Gamepad } from 'lucide-react';
 
 const Home = () => {
   const { user, isAuthenticated } = useAuth();
@@ -78,7 +77,7 @@ const Home = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
             <div className="gaming-card p-6 flex flex-col items-center text-center hover:translate-y-[-5px] transition-transform">
               <div className="w-16 h-16 rounded-full bg-gaming-blue/20 flex items-center justify-center mb-4">
-                <GameController size={28} className="text-gaming-blue" />
+                <Gamepad size={28} className="text-gaming-blue" />
               </div>
               <h3 className="text-xl font-bold mb-3">Game Integration</h3>
               <p className="text-muted-foreground">

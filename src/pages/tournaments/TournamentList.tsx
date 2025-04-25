@@ -1,8 +1,7 @@
-
 import { useState } from 'react';
 import { 
   Search, Filter, Calendar, Trophy, 
-  Users, GameController, Tag, ChevronRight, ChevronLeft 
+  Users, Gamepad, Tag, ChevronRight, ChevronLeft 
 } from 'lucide-react';
 
 // Mock tournament data
@@ -210,7 +209,7 @@ const TournamentList = () => {
               </select>
             </div>
             <div className="flex items-center gap-2">
-              <GameController size={18} className="text-muted-foreground" />
+              <Gamepad size={18} className="text-muted-foreground" />
               <select
                 value={gameFilter}
                 onChange={(e) => setGameFilter(e.target.value)}
@@ -323,7 +322,7 @@ const TournamentList = () => {
                         <StatusBadge status={tournament.status} />
                       </div>
                       <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
-                        <GameController size={14} />
+                        <Gamepad size={14} />
                         <span>{tournament.game}</span>
                         <span className="text-xs">•</span>
                         <span>{tournament.organizer}</span>

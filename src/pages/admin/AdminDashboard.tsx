@@ -1,7 +1,6 @@
-
 import { useState } from 'react';
 import { 
-  BarChart3, Trophy, Users, GameController, 
+  BarChart3, Trophy, Users, Gamepad, 
   TrendingUp, DollarSign, Calendar, Circle
 } from 'lucide-react';
 
@@ -54,7 +53,7 @@ const AdminDashboard = () => {
     {
       title: 'Supported Games',
       value: '48',
-      icon: <GameController size={20} className="text-gaming-blue" />,
+      icon: <Gamepad size={20} className="text-gaming-blue" />,
       trend: { value: '+12.5%', up: true },
       color: 'gaming-blue'
     },
@@ -274,7 +273,7 @@ const AdminDashboard = () => {
                   <span className="text-sm">New Tournament</span>
                 </button>
                 <button className="bg-gaming-dark/50 p-3 rounded-md hover:bg-gaming-dark transition-colors text-center">
-                  <GameController size={18} className="mx-auto mb-1" />
+                  <Gamepad size={18} className="mx-auto mb-1" />
                   <span className="text-sm">Add Game</span>
                 </button>
                 <button className="bg-gaming-dark/50 p-3 rounded-md hover:bg-gaming-dark transition-colors text-center">
