@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -24,9 +23,12 @@ import TournamentManagement from "./pages/organizer/TournamentManagement";
 
 // Player pages
 import PlayerDashboard from "./pages/player/PlayerDashboard";
+import MyTeam from "./pages/player/teams/MyTeam";
 
 // Public pages
 import TournamentList from "./pages/tournaments/TournamentList";
+import Matches from "./pages/matches/Matches";
+import Leaderboard from "./pages/leaderboard/Leaderboard";
 
 const queryClient = new QueryClient();
 
@@ -66,7 +68,14 @@ const App = () => (
             <Route element={<ProtectedRoute />}>
               <Route element={<RoleProtectedRoute allowedRoles={["player"]} />}>
                 <Route path="/player/dashboard" element={<MainLayout><PlayerDashboard /></MainLayout>} />
+                <Route path="/player/teams" element={<MainLayout><MyTeam /></MainLayout>} />
               </Route>
+            </Route>
+
+            {/* Match Routes (accessible to all authenticated users) */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/matches" element={<MainLayout><Matches /></MainLayout>} />
+              <Route path="/leaderboard" element={<MainLayout><Leaderboard /></MainLayout>} />
             </Route>
             
             {/* Catch-all route */}
