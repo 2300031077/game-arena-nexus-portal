@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -49,6 +50,10 @@ const App = () => (
             <Route path="/" element={<MainLayout><Home /></MainLayout>} />
             <Route path="/tournaments" element={<MainLayout><TournamentList /></MainLayout>} />
             
+            {/* Updated Matches and Leaderboard routes to be accessible to all */}
+            <Route path="/matches" element={<MainLayout><Matches /></MainLayout>} />
+            <Route path="/leaderboard" element={<MainLayout><Leaderboard /></MainLayout>} />
+            
             {/* Protected Admin Routes */}
             <Route element={<ProtectedRoute />}>
               <Route element={<RoleProtectedRoute allowedRoles={["admin"]} />}>
@@ -69,13 +74,8 @@ const App = () => (
               <Route element={<RoleProtectedRoute allowedRoles={["player"]} />}>
                 <Route path="/player/dashboard" element={<MainLayout><PlayerDashboard /></MainLayout>} />
                 <Route path="/player/teams" element={<MainLayout><MyTeam /></MainLayout>} />
+                <Route path="/player/matches" element={<MainLayout><Matches /></MainLayout>} />
               </Route>
-            </Route>
-
-            {/* Match Routes (accessible to all authenticated users) */}
-            <Route element={<ProtectedRoute />}>
-              <Route path="/matches" element={<MainLayout><Matches /></MainLayout>} />
-              <Route path="/leaderboard" element={<MainLayout><Leaderboard /></MainLayout>} />
             </Route>
             
             {/* Catch-all route */}

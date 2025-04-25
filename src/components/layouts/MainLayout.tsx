@@ -1,3 +1,4 @@
+
 import { ReactNode } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -70,13 +71,13 @@ const MainLayout = ({ children }: MainLayoutProps) => {
       roles: ['player'] 
     },
     { 
-      path: '/player/matches', 
+      path: '/matches', 
       name: 'Matches', 
       icon: <Calendar size={20} />, 
-      roles: ['player', 'spectator'] 
+      roles: ['player', 'spectator', 'admin', 'organizer'] 
     },
     { 
-      path: '/leaderboards', 
+      path: '/leaderboard', 
       name: 'Leaderboards', 
       icon: <Medal size={20} />, 
       roles: ['admin', 'organizer', 'player', 'spectator'] 
