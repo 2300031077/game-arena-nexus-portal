@@ -1,11 +1,11 @@
-
 import { ReactNode } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { 
-  Home, LogOut, Trophy, Gamepad, Users, 
-  Calendar, BarChart3, Medal, User, Bell
+  Home, Trophy, Gamepad, Users, 
+  Calendar, BarChart3, Medal, Bell
 } from 'lucide-react';
+import ProfileDropdown from '../ProfileDropdown';
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -190,20 +190,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
                   </span>
                 </button>
                 
-                <div className="flex items-center gap-2">
-                  <Link to="/profile" className="flex items-center gap-2 hover:text-gaming-purple transition-colors">
-                    <User size={20} />
-                    <span>Profile</span>
-                  </Link>
-                  
-                  <button 
-                    onClick={logout} 
-                    className="ml-4 flex items-center gap-1 text-muted-foreground hover:text-white transition-colors"
-                  >
-                    <LogOut size={18} />
-                    <span>Logout</span>
-                  </button>
-                </div>
+                <ProfileDropdown />
               </>
             )}
           </div>
