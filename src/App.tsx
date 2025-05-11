@@ -20,6 +20,7 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import GameManagement from "./pages/admin/GameManagement";
 import UserDetails from "./pages/admin/UserDetails";
 import TournamentManagement from "./pages/admin/TournamentManagement";
+import UserManagement from "./pages/admin/UserManagement";
 
 // Organizer pages
 import OrganizerTournamentManagement from "./pages/organizer/TournamentManagement";
@@ -61,6 +62,7 @@ const App = () => (
               <Route element={<RoleProtectedRoute allowedRoles={["admin"]} />}>
                 <Route path="/admin/dashboard" element={<MainLayout><AdminDashboard /></MainLayout>} />
                 <Route path="/admin/games" element={<MainLayout><GameManagement /></MainLayout>} />
+                <Route path="/admin/users" element={<MainLayout><UserManagement /></MainLayout>} />
                 <Route path="/admin/users/:userId" element={<MainLayout><UserDetails /></MainLayout>} />
                 <Route path="/admin/tournaments" element={<MainLayout><TournamentManagement /></MainLayout>} />
               </Route>
