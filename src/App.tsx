@@ -19,9 +19,10 @@ import NotFound from "./pages/NotFound";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import GameManagement from "./pages/admin/GameManagement";
 import UserDetails from "./pages/admin/UserDetails";
+import TournamentManagement from "./pages/admin/TournamentManagement";
 
 // Organizer pages
-import TournamentManagement from "./pages/organizer/TournamentManagement";
+import OrganizerTournamentManagement from "./pages/organizer/TournamentManagement";
 
 // Player pages
 import PlayerDashboard from "./pages/player/PlayerDashboard";
@@ -61,13 +62,14 @@ const App = () => (
                 <Route path="/admin/dashboard" element={<MainLayout><AdminDashboard /></MainLayout>} />
                 <Route path="/admin/games" element={<MainLayout><GameManagement /></MainLayout>} />
                 <Route path="/admin/users/:userId" element={<MainLayout><UserDetails /></MainLayout>} />
+                <Route path="/admin/tournaments" element={<MainLayout><TournamentManagement /></MainLayout>} />
               </Route>
             </Route>
             
             {/* Protected Organizer Routes */}
             <Route element={<ProtectedRoute />}>
               <Route element={<RoleProtectedRoute allowedRoles={["organizer"]} />}>
-                <Route path="/organizer/tournaments" element={<MainLayout><TournamentManagement /></MainLayout>} />
+                <Route path="/organizer/tournaments" element={<MainLayout><OrganizerTournamentManagement /></MainLayout>} />
               </Route>
             </Route>
             

@@ -150,6 +150,23 @@ const StatusBadge = ({ status }: { status: string }) => {
   );
 };
 
+// Define the tournament type to match the MOCK_TOURNAMENTS structure
+type Tournament = {
+  id: number;
+  name: string;
+  game: string;
+  image: string;
+  status: string;
+  format: string;
+  startDate: string;
+  endDate: string;
+  prizePool: string;
+  registeredTeams: number;
+  maxTeams: number;
+  region: string;
+  description?: string;
+};
+
 interface TournamentFormData {
   id?: number;
   name: string;
@@ -160,9 +177,10 @@ interface TournamentFormData {
   startDate: string;
   endDate: string;
   prizePool: string;
-  maxTeams: string;
+  maxTeams: number; // Changed from string to number to match the type
   region: string;
   description: string;
+  registeredTeams?: number; // Added this field that was missing
 }
 
 const emptyTournamentForm: TournamentFormData = {
@@ -174,14 +192,15 @@ const emptyTournamentForm: TournamentFormData = {
   startDate: '',
   endDate: '',
   prizePool: '',
-  maxTeams: '',
+  maxTeams: 0, // Changed from empty string to 0 to match number type
   region: '',
-  description: ''
+  description: '',
+  registeredTeams: 0 // Initialize with 0
 };
 
 const AdminTournamentManagement = () => {
   const { toast } = useToast();
-  const [tournaments, setTournaments] = useState(MOCK_TOURNAMENTS);
+  const [tournaments, setTournaments] = useState<Tournament[]>(MOCK_TOURNAMENTS);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -205,15 +224,21 @@ const AdminTournamentManagement = () => {
   };
 
   // Open view tournament modal
-  const handleViewTournament = (tournament: any) => {
-    setCurrentTournament(tournament);
+  const handleViewTournament = (tournament: Tournament) => {
+    setCurrentTournament({
+      ...tournament,
+      description: tournament.description || ''
+    });
     setModalMode('view');
     setIsModalOpen(true);
   };
 
   // Open edit tournament modal
-  const handleEditTournament = (tournament: any) => {
-    setCurrentTournament(tournament);
+  const handleEditTournament = (tournament: Tournament) => {
+    setCurrentTournament({
+      ...tournament,
+      description: tournament.description || ''
+    });
     setModalMode('edit');
     setIsModalOpen(true);
   };
@@ -238,10 +263,19 @@ const AdminTournamentManagement = () => {
   // Handle form input change
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setCurrentTournament(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    
+    // Convert maxTeams to number when it's that field
+    if (name === 'maxTeams') {
+      setCurrentTournament(prev => ({
+        ...prev,
+        [name]: value === '' ? 0 : parseInt(value, 10)
+      }));
+    } else {
+      setCurrentTournament(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
   };
 
   // Save tournament (create or edit)
@@ -249,7 +283,7 @@ const AdminTournamentManagement = () => {
     // Validate form
     if (!currentTournament.name || !currentTournament.game || !currentTournament.format || 
         !currentTournament.startDate || !currentTournament.endDate || !currentTournament.prizePool || 
-        !currentTournament.maxTeams || !currentTournament.region) {
+        currentTournament.maxTeams <= 0 || !currentTournament.region) {
       toast({
         title: "Missing information",
         description: "Please fill out all required fields.",
@@ -260,11 +294,11 @@ const AdminTournamentManagement = () => {
 
     if (modalMode === 'create') {
       // Create new tournament
-      const newTournament = {
+      const newTournament: Tournament = {
         ...currentTournament,
         id: Math.max(0, ...tournaments.map(t => t.id)) + 1,
         image: AVAILABLE_GAMES.find(g => g.name === currentTournament.game)?.image || '',
-        registeredTeams: 0
+        registeredTeams: currentTournament.registeredTeams || 0
       };
       setTournaments([...tournaments, newTournament]);
       toast({
@@ -274,7 +308,12 @@ const AdminTournamentManagement = () => {
     } else if (modalMode === 'edit') {
       // Update existing tournament
       setTournaments(tournaments.map(t => 
-        t.id === currentTournament.id ? { ...t, ...currentTournament } : t
+        t.id === currentTournament.id ? { 
+          ...t, 
+          ...currentTournament,
+          registeredTeams: currentTournament.registeredTeams || t.registeredTeams,
+          maxTeams: currentTournament.maxTeams
+        } : t
       ));
       toast({
         title: "Tournament updated",
@@ -551,7 +590,8 @@ const AdminTournamentManagement = () => {
                   id="maxTeams"
                   name="maxTeams"
                   type="number"
-                  value={currentTournament.maxTeams}
+                  min="1"
+                  value={currentTournament.maxTeams.toString()}
                   onChange={handleInputChange}
                   placeholder="e.g. 32"
                   disabled={modalMode === 'view'}
@@ -602,7 +642,7 @@ const AdminTournamentManagement = () => {
               <div className="border rounded-md p-4 bg-gaming-dark/20">
                 <h4 className="text-sm font-medium mb-2">Registered Teams</h4>
                 <p className="text-sm text-muted-foreground">
-                  {currentTournament.registeredTeams ? `${currentTournament.registeredTeams} out of ${currentTournament.maxTeams} teams registered` : 'No teams registered yet'}
+                  {currentTournament.registeredTeams !== undefined ? `${currentTournament.registeredTeams} out of ${currentTournament.maxTeams} teams registered` : 'No teams registered yet'}
                 </p>
               </div>
             )}
