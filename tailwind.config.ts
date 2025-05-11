@@ -121,6 +121,14 @@ export default {
 					'50%': { 
 						boxShadow: '0 0 15px 5px rgba(139, 92, 246, 0.5)'
 					},
+				},
+				'loading': {
+					'0%': { 
+						width: '0%' 
+					},
+					'100%': { 
+						width: '100%' 
+					}
 				}
 			},
 			animation: {
