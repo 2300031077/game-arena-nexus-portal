@@ -5,10 +5,19 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { User, LogOut, Award } from "lucide-react";
+import { User, LogOut, Award, Gamepad } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
+
+// Mock data for registered tournaments - in a real app, this would be fetched from an API
+const registeredTournaments = [
+  "Spring Championship 2025",
+  "Summer League"
+];
+
+// Mock data for games - in a real app, this would be fetched from an API
+const games = ["Valorant", "Call of Duty"];
 
 const ProfileDropdown = () => {
   const { user, logout } = useAuth();
@@ -16,10 +25,6 @@ const ProfileDropdown = () => {
   if (!user) return null;
 
   const userInitials = user.username.slice(0, 2).toUpperCase();
-
-  // Mock data for tournaments and games - in a real app, this would come from your API
-  const tournaments = ["Spring Championship 2025", "Summer League"];
-  const games = ["Valorant", "Call of Duty"];
   
   return (
     <Popover>
@@ -63,9 +68,9 @@ const ProfileDropdown = () => {
                   <Award size={16} />
                   Registered Tournaments
                 </h4>
-                {tournaments.length > 0 ? (
+                {registeredTournaments.length > 0 ? (
                   <ul className="mt-1 text-sm">
-                    {tournaments.map((tournament, i) => (
+                    {registeredTournaments.map((tournament, i) => (
                       <li key={i} className="text-muted-foreground">{tournament}</li>
                     ))}
                   </ul>
@@ -76,7 +81,7 @@ const ProfileDropdown = () => {
               
               <div>
                 <h4 className="text-sm font-semibold flex items-center gap-2">
-                  <User size={16} />
+                  <Gamepad size={16} />
                   Current Games
                 </h4>
                 {games.length > 0 ? (

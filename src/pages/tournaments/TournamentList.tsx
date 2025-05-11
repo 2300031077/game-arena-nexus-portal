@@ -3,6 +3,7 @@ import {
   Search, Filter, Calendar, Trophy, 
   Users, Gamepad, Tag, ChevronRight, ChevronLeft 
 } from 'lucide-react';
+import TournamentDialog from '@/components/tournaments/TournamentDialog';
 
 // Mock tournament data
 const MOCK_TOURNAMENTS = [
@@ -163,6 +164,8 @@ const TournamentList = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [gameFilter, setGameFilter] = useState('all');
   const [view, setView] = useState<'grid' | 'list'>('grid');
+  const [selectedTournament, setSelectedTournament] = useState<any>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
   
   // Get unique games
   const games = ['all', ...Array.from(new Set(MOCK_TOURNAMENTS.map(t => t.game)))];
@@ -176,6 +179,11 @@ const TournamentList = () => {
     const matchesGame = gameFilter === 'all' || tournament.game === gameFilter;
     return matchesSearch && matchesStatus && matchesGame;
   });
+  
+  const handleViewTournament = (tournament: any) => {
+    setSelectedTournament(tournament);
+    setDialogOpen(true);
+  };
   
   return (
     <div className="space-y-6 animate-fade-in">
@@ -294,7 +302,10 @@ const TournamentList = () => {
                   </div>
                 </div>
                 
-                <button className="gaming-btn-primary w-full flex items-center justify-center gap-1">
+                <button 
+                  className="gaming-btn-primary w-full flex items-center justify-center gap-1"
+                  onClick={() => handleViewTournament(tournament)}
+                >
                   <span>View Tournament</span>
                   <ChevronRight size={16} />
                 </button>
@@ -329,7 +340,10 @@ const TournamentList = () => {
                       </div>
                     </div>
                     <div className="hidden lg:block">
-                      <button className="gaming-btn-primary flex items-center gap-1">
+                      <button 
+                        className="gaming-btn-primary flex items-center gap-1"
+                        onClick={() => handleViewTournament(tournament)}
+                      >
                         <span>View Details</span>
                         <ChevronRight size={16} />
                       </button>
@@ -364,7 +378,10 @@ const TournamentList = () => {
                   </div>
                   
                   <div className="mt-3 lg:hidden">
-                    <button className="gaming-btn-primary w-full flex items-center justify-center gap-1">
+                    <button 
+                      className="gaming-btn-primary w-full flex items-center justify-center gap-1"
+                      onClick={() => handleViewTournament(tournament)}
+                    >
                       <span>View Details</span>
                       <ChevronRight size={16} />
                     </button>
@@ -402,6 +419,13 @@ const TournamentList = () => {
           </button>
         </div>
       </div>
+
+      {/* Tournament Dialog */}
+      <TournamentDialog 
+        tournament={selectedTournament} 
+        open={dialogOpen} 
+        onOpenChange={setDialogOpen} 
+      />
     </div>
   );
 };

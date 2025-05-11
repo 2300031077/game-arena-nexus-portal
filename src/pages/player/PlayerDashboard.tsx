@@ -3,6 +3,8 @@ import {
   Trophy, Gamepad, Calendar, Users, Activity, 
   Plus, Medal, ChevronRight, Clock, Search
 } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/hooks/use-toast';
 
 // Mock data for recent tournaments
 const recentTournaments = [
@@ -84,8 +86,30 @@ const playerStats = {
   favoriteGame: 'League of Legends'
 };
 
+// Mock data for registered tournaments
+const registeredTournaments = [
+  {
+    id: 1,
+    name: 'Summer Championship 2023',
+    game: 'League of Legends',
+    date: '2023-08-15',
+    status: 'active',
+    teamName: 'Phoenix Rising'
+  },
+  {
+    id: 2,
+    name: 'Valorant Pro League Season 4',
+    game: 'Valorant',
+    date: '2023-07-20',
+    status: 'active',
+    teamName: 'Shadow Ops'
+  }
+];
+
 const PlayerDashboard = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const { user } = useAuth();
+  const { toast } = useToast();
   
   return (
     <div className="space-y-6 animate-fade-in">
@@ -140,6 +164,53 @@ const PlayerDashboard = () => {
             <Gamepad size={40} className="text-gaming-blue" />
           </div>
         </div>
+      </div>
+      
+      {/* Registered Tournaments */}
+      <div className="gaming-card p-5">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-xl font-medium">My Registered Tournaments</h3>
+          <a href="/tournaments" className="text-sm text-gaming-purple hover:underline">Find Tournaments</a>
+        </div>
+        
+        {registeredTournaments.length > 0 ? (
+          <div className="space-y-3">
+            {registeredTournaments.map(tournament => (
+              <div key={tournament.id} className="border border-border rounded-lg p-3 hover:bg-secondary/10">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium">{tournament.name}</p>
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <span>{tournament.game}</span>
+                      <span>•</span>
+                      <span>Team: {tournament.teamName}</span>
+                    </div>
+                  </div>
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                    tournament.status === 'active' 
+                      ? 'bg-green-500/20 text-green-500' 
+                      : 'bg-blue-500/20 text-blue-500'
+                  } capitalize`}>
+                    {tournament.status}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-8 border border-dashed border-border rounded-lg">
+            <Trophy size={48} className="mx-auto text-muted-foreground mb-2 opacity-60" />
+            <p className="font-medium">No Tournaments Registered</p>
+            <p className="text-sm text-muted-foreground mb-4">Join a tournament to see it listed here</p>
+            <a 
+              href="/tournaments" 
+              className="gaming-btn-secondary inline-flex items-center gap-1"
+            >
+              Browse Tournaments
+              <ChevronRight size={16} />
+            </a>
+          </div>
+        )}
       </div>
       
       {/* Upcoming Matches */}
